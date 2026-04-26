@@ -1,5 +1,5 @@
 # corex-core
-test
+
 > Core engine — players, money, metadata, StateBag sync, callbacks, and DB.
 
 Part of the [COREX Framework](https://github.com/ABUGIZA/COREX-Framework).
