@@ -26,10 +26,15 @@ local DEFAULT_MONEY = {
 }
 
 local STAT_LIMITS = {
-    hunger = { min = 0, max = 100 },
-    thirst = { min = 0, max = 100 },
-    stress = { min = 0, max = 100 },
-    infection = { min = 0, max = 100 }
+    hunger    = { min = 0, max = 100 },
+    thirst    = { min = 0, max = 100 },
+    stress    = { min = 0, max = 100 },
+    infection = { min = 0, max = 100 },
+    -- Status meters that double as stats (corex-survival writes them server-side).
+    cold      = { min = 0, max = 100 },
+    bleeding  = { min = 0, max = 100 },
+    poison    = { min = 0, max = 100 },
+    sick      = { min = 0, max = 100 }
 }
 
 local STATEBAG_METADATA_KEYS = {
@@ -650,18 +655,25 @@ function COREX.Player.GetMetaData(source, key)
 end
 
 function COREX.Player.GetStat(source, statName)
-    if not DEFAULT_STATS[statName] then
+    -- A "stat" lives in DEFAULT_STATS (vital meters) OR DEFAULT_STATUS_METADATA
+    -- (status meters like cold / bleeding). Both flow through SetMetaData so
+    -- they sync to the state-bag and the HUD picks them up.
+    local defaultValue = DEFAULT_STATS[statName]
+    if defaultValue == nil then
+        defaultValue = DEFAULT_STATUS_METADATA[statName]
+    end
+    if defaultValue == nil then
         return nil
     end
 
     local player = Players[source]
     if not player then
-        return DEFAULT_STATS[statName]
+        return defaultValue
     end
 
     local currentValue = player.metadata[statName]
     if type(currentValue) ~= 'number' then
-        return DEFAULT_STATS[statName]
+        return defaultValue
     end
 
     return currentValue
