@@ -9,6 +9,8 @@ Corex.SharedVehicles["bike_rental"] = {
     subtitle = "BASIC TRANSPORT",
     currency = "cash",
     purchaseLabel = "Deploy Bike",
+    portable = true,
+    inventoryItem = "rental_bicycle",
     vehicles = {
         {
             model = "bmx",
